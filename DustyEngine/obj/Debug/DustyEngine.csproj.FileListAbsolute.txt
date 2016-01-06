@@ -1,0 +1,9 @@
+C:\Users\Andrews\Google Drive\Projects\DustyEngine\bin\Debug\DustyEngine.dll
+C:\Users\Andrews\Google Drive\Projects\DustyEngine\bin\Debug\DustyEngine.pdb
+C:\Users\Andrews\Google Drive\Projects\DustyEngine\obj\Debug\DustyEngine.dll
+C:\Users\Andrews\Google Drive\Projects\DustyEngine\obj\Debug\DustyEngine.pdb
+C:\Users\Andrews\Google Drive\Projects\DustyEngine\DustyEngine\bin\Debug\DustyEngine.dll
+C:\Users\Andrews\Google Drive\Projects\DustyEngine\DustyEngine\bin\Debug\DustyEngine.pdb
+C:\Users\Andrews\Google Drive\Projects\DustyEngine\DustyEngine\obj\Debug\DustyEngine.csprojResolveAssemblyReference.cache
+C:\Users\Andrews\Google Drive\Projects\DustyEngine\DustyEngine\obj\Debug\DustyEngine.dll
+C:\Users\Andrews\Google Drive\Projects\DustyEngine\DustyEngine\obj\Debug\DustyEngine.pdb
