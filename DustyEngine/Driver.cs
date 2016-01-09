@@ -64,21 +64,41 @@ namespace DustyEngine
 
             if(!t.Paused)
             {
-                t.UpdatesSinceLastExecution++;
-
-                if (t.UpdatesSinceLastExecution >= t.Interval)
+                var now = (ulong)DateTime.Now.Ticks / 10000;
+                
+                if (t.IntervalMethod == TaskIntervalMethod.Updates)
                 {
-                    t.OnUpdate();
-                    t.UpdatesSinceLastExecution = 0;
-                    t.NumExecutions++;
+                    t.UpdatesSinceLastExecution++;
 
-                    if(t.LifetimeExecutions > 0 && t.NumExecutions >= t.LifetimeExecutions)
+                    if (t.UpdatesSinceLastExecution >= t.Interval)
                     {
-                        removalStack.Push(t);
+                        t.OnUpdate();
+                        t.UpdatesSinceLastExecution = 0;
+                        t.LastExecutionTime = now;
+                        t.NumExecutions++;
                     }
                 }
+                else
+                {
+                    // first time the task is executed, don't run it (start the timer)
+                    if(t.LastExecutionTime == 0)
+                    {
+                        t.LastExecutionTime = now;
+                    }
+                    else if(now - t.LastExecutionTime > t.Interval)
+                    {
+                        t.OnUpdate();
+                        t.LastExecutionTime = now;
+                        t.NumExecutions++;
+                    }
+                }
+                
+                if (t.LifetimeExecutions > 0 && t.NumExecutions >= t.LifetimeExecutions)
+                {
+                    removalStack.Push(t);
+                }
 
-                foreach(var c in t.Children)
+                foreach (var c in t.Children)
                 {
                     UpdateTask(c, removalStack);
                 }

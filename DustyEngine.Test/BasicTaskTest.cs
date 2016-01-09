@@ -56,6 +56,7 @@ namespace DustyEngine.Test
         {
             var ct = new CounterTask();
             Driver.Instance.RootTask.AddChild(ct);
+            ct.IntervalMethod = TaskIntervalMethod.Updates;
 
             Assert.AreEqual(0, ct.Value);
             Driver.Instance.Update();
@@ -90,6 +91,7 @@ namespace DustyEngine.Test
         {
             var ct = new CounterTask();
             Driver.Instance.RootTask.AddChild(ct);
+            ct.IntervalMethod = TaskIntervalMethod.Updates;
 
             ct.Interval = 5;
             Driver.Instance.Update();
@@ -122,6 +124,7 @@ namespace DustyEngine.Test
         {
             var bt = new BasicTask();
             bt.LifetimeExecutions = 3;
+            bt.IntervalMethod = TaskIntervalMethod.Updates;
 
             Driver.Instance.RootTask.AddChild(bt);
             Assert.AreEqual(1, Driver.Instance.RootTask.Children.Count);
@@ -134,6 +137,24 @@ namespace DustyEngine.Test
             Assert.AreEqual(0, Driver.Instance.RootTask.Children.Count);
             Assert.IsNull(bt.Parent);
 
+            Driver.Instance.RootTask.ClearChildren();
+        }
+
+        [TestMethod]
+        public void TestTimeTask()
+        {
+            var bt = new BasicTask();
+            bt.Interval = 1000;
+
+            Driver.Instance.RootTask.AddChild(bt);
+            var time = DateTime.Now.Ticks / 10000;
+
+            while(DateTime.Now.Ticks / 10000 - time < 3500)
+            {
+                Driver.Instance.Update();
+            }
+
+            Assert.AreEqual(3, (int)bt.NumExecutions);
             Driver.Instance.RootTask.ClearChildren();
         }
     }

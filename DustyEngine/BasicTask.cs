@@ -8,36 +8,36 @@ namespace DustyEngine
 {
     public class BasicTask : ITask
     {
-        protected UInt32 _interval = 0;
-        public UInt32 Interval
+        protected ulong _interval = 0;
+        public ulong Interval
         {
             get { return _interval; }
             set { _interval = value; }
         }
 
-        protected UInt32 _updatesSinceLastExecution = 0;
-        public UInt32 UpdatesSinceLastExecution
+        protected ulong _updatesSinceLastExecution = 0;
+        public ulong UpdatesSinceLastExecution
         {
             get { return _updatesSinceLastExecution; }
             set { _updatesSinceLastExecution = value; }
         }
 
-        protected UInt32 _numExecutions = 0;
-        public UInt32 NumExecutions
+        protected ulong _numExecutions = 0;
+        public ulong NumExecutions
         {
             get { return _numExecutions; }
             set { _numExecutions = value; }
         }
 
-        protected UInt32 _lifetimeMS = 0;
-        public UInt32 LifetimeMS
+        protected ulong _lifetimeMS = 0;
+        public ulong LifetimeMS
         {
             get { return _lifetimeMS; }
             set { _lifetimeMS = value; }
         }
 
-        protected UInt32 _lifetimeExecutions = 0;
-        public UInt32 LifetimeExecutions
+        protected ulong _lifetimeExecutions = 0;
+        public ulong LifetimeExecutions
         {
             get { return _lifetimeExecutions; }
             set { _lifetimeExecutions = value; }
@@ -68,7 +68,28 @@ namespace DustyEngine
             get { return _children; }
         }
 
-        protected UInt32 _totalExecutions = 0;
+        protected TaskIntervalMethod _intervalMethod = TaskIntervalMethod.Time;
+        public TaskIntervalMethod IntervalMethod
+        {
+            get { return _intervalMethod; }
+            set { _intervalMethod = value; }
+        }
+
+        protected ulong _pauseTime;
+        protected ulong _lastExecutionTime;
+        public ulong LastExecutionTime
+        {
+            get
+            {
+                return _lastExecutionTime;
+            }
+            set
+            {
+                _lastExecutionTime = value;
+            }
+        }
+
+        protected ulong _totalExecutions = 0;
 
         public BasicTask()
         {
@@ -104,13 +125,29 @@ namespace DustyEngine
         public virtual void Pause()
         {
             _paused = true;
+            _pauseTime = (ulong)DateTime.Now.Ticks;
             OnPause();
+
+            foreach(var t in Children)
+            {
+                t.Pause();
+            }
         }
 
         public virtual void Unpause()
         {
             _paused = false;
+
+            // push up last execution time based upon the length of time paused (to avoid stutter)
+            var timePaused = (ulong)DateTime.Now.Ticks - _pauseTime;
+            _lastExecutionTime += timePaused;
+
             OnUnpause();
+
+            foreach (var t in Children)
+            {
+                t.Unpause();
+            }
         }
 
         public virtual void PauseChildren()
@@ -185,12 +222,6 @@ namespace DustyEngine
 
         public virtual void OnUpdate()
         {
-            _totalExecutions++;
-
-            if(_lifetimeExecutions > 0 && _totalExecutions >= _lifetimeExecutions)
-            {
-
-            }
         }
     }
 }

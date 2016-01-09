@@ -8,15 +8,17 @@ namespace DustyEngine
 {
     public interface ITask
     {
-        UInt32 Interval { get; set; }
-        UInt32 UpdatesSinceLastExecution { get; set; }
-        UInt32 NumExecutions { get; set; }
-        UInt32 LifetimeMS { get; set; }
-        UInt32 LifetimeExecutions { get; set; }
+        ulong Interval { get; set; }
+        ulong UpdatesSinceLastExecution { get; set; }
+        ulong NumExecutions { get; set; }
+        ulong LifetimeMS { get; set; }
+        ulong LifetimeExecutions { get; set; }
+        ulong LastExecutionTime { get; set; }
         bool Paused { get; }
         Driver Driver { get; set; }
         ITask Parent { get; }
 
+        TaskIntervalMethod IntervalMethod { get; set; }
         List<ITask> Children { get; }
 
         void OnPause();
